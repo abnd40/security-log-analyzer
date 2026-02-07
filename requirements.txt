@@ -1,0 +1,29 @@
+# Security Log Analyzer - Dependencies
+# Python 3.8+ required
+
+# Core dependencies (all included in Python standard library)
+# No external dependencies required for core functionality!
+
+# Optional dependencies for enhanced functionality:
+
+# For IP geolocation (geo anomaly detection)
+# geoip2>=4.7.0
+
+# For enhanced date parsing
+# python-dateutil>=2.8.2
+
+# For YAML configuration support
+# pyyaml>=6.0
+
+# For JSON schema validation
+# jsonschema>=4.17.0
+
+# Development dependencies:
+# pytest>=7.4.0
+# pytest-cov>=4.1.0
+# black>=23.0.0
+# flake8>=6.0.0
+# mypy>=1.5.0
+
+# For building standalone executables:
+# pyinstaller>=5.13.0

@@ -1,0 +1,161 @@
+# Windows Security Event Log - Sample with Attack Patterns
+# Exported in text format for Security Log Analyzer Demo
+# Format: Date Time Level Source EventID TaskCategory
+1/15/2024 8:00:00 AM Information Microsoft-Windows-Security-Auditing 4624 Logon
+    An account was successfully logged on.
+    Subject: Security ID: SYSTEM, Account Name: WORKSTATION$
+    Logon Type: 5
+    New Logon: Security ID: NT AUTHORITY\SYSTEM, Account Name: SYSTEM
+    Network Information: Workstation Name: -, Source Network Address: -, Source Port: -
+
+1/15/2024 8:15:00 AM Information Microsoft-Windows-Security-Auditing 4624 Logon
+    An account was successfully logged on.
+    Subject: Security ID: NULL SID, Account Name: -
+    Logon Type: 10
+    New Logon: Security ID: CORP\jsmith, Account Name: jsmith
+    Network Information: Workstation Name: WORKSTATION01, Source Network Address: 192.168.1.50, Source Port: 49152
+
+1/15/2024 8:30:00 AM Information Microsoft-Windows-Security-Auditing 4672 Special Logon
+    Special privileges assigned to new logon.
+    Subject: Security ID: CORP\jsmith, Account Name: jsmith
+    Privileges: SeSecurityPrivilege, SeTakeOwnershipPrivilege, SeBackupPrivilege
+
+# Brute Force Attack - Multiple Failed Logons
+1/15/2024 9:00:01 AM Audit Failure Microsoft-Windows-Security-Auditing 4625 Logon
+    An account failed to log on.
+    Subject: Security ID: NULL SID, Account Name: -
+    Logon Type: 3
+    Account For Which Logon Failed: Security ID: NULL SID, Account Name: administrator
+    Failure Information: Failure Reason: Unknown user name or bad password, Status: 0xc000006d, Sub Status: 0xc000006a
+    Network Information: Workstation Name: -, Source Network Address: 45.33.32.156, Source Port: 54321
+
+1/15/2024 9:00:02 AM Audit Failure Microsoft-Windows-Security-Auditing 4625 Logon
+    An account failed to log on.
+    Subject: Security ID: NULL SID, Account Name: -
+    Logon Type: 3
+    Account For Which Logon Failed: Security ID: NULL SID, Account Name: administrator
+    Failure Information: Failure Reason: Unknown user name or bad password, Status: 0xc000006d, Sub Status: 0xc000006a
+    Network Information: Workstation Name: -, Source Network Address: 45.33.32.156, Source Port: 54322
+
+1/15/2024 9:00:03 AM Audit Failure Microsoft-Windows-Security-Auditing 4625 Logon
+    An account failed to log on.
+    Logon Type: 3
+    Account For Which Logon Failed: Account Name: admin
+    Failure Information: Status: 0xc0000064
+    Network Information: Source Network Address: 45.33.32.156, Source Port: 54323
+
+1/15/2024 9:00:04 AM Audit Failure Microsoft-Windows-Security-Auditing 4625 Logon
+    An account failed to log on.
+    Logon Type: 3
+    Account For Which Logon Failed: Account Name: root
+    Failure Information: Status: 0xc0000064
+    Network Information: Source Network Address: 45.33.32.156, Source Port: 54324
+
+1/15/2024 9:00:05 AM Audit Failure Microsoft-Windows-Security-Auditing 4625 Logon
+    An account failed to log on.
+    Logon Type: 3
+    Account For Which Logon Failed: Account Name: test
+    Failure Information: Status: 0xc0000064
+    Network Information: Source Network Address: 45.33.32.156, Source Port: 54325
+
+1/15/2024 9:00:06 AM Audit Failure Microsoft-Windows-Security-Auditing 4625 Logon
+    An account failed to log on.
+    Logon Type: 3
+    Account For Which Logon Failed: Account Name: guest
+    Failure Information: Status: 0xc0000234
+    Network Information: Source Network Address: 45.33.32.156, Source Port: 54326
+
+# Successful Logon After Failed Attempts (Compromised Account)
+1/15/2024 9:00:15 AM Information Microsoft-Windows-Security-Auditing 4624 Logon
+    An account was successfully logged on.
+    Logon Type: 3
+    New Logon: Account Name: administrator
+    Network Information: Source Network Address: 45.33.32.156, Source Port: 54400
+
+# Account Management - Suspicious Activity
+1/15/2024 9:01:00 AM Information Microsoft-Windows-Security-Auditing 4720 User Account Management
+    A user account was created.
+    Subject: Account Name: administrator
+    New Account: Account Name: svc_backup, Account Domain: CORP
+
+1/15/2024 9:01:30 AM Information Microsoft-Windows-Security-Auditing 4732 Security Group Management
+    A member was added to a security-enabled local group.
+    Subject: Account Name: administrator
+    Member: Account Name: svc_backup
+    Group: Group Name: Administrators
+
+1/15/2024 9:02:00 AM Information Microsoft-Windows-Security-Auditing 4728 Security Group Management
+    A member was added to a security-enabled global group.
+    Subject: Account Name: administrator
+    Member: Account Name: svc_backup
+    Group: Group Name: Domain Admins
+
+# Process Creation - Suspicious Commands
+1/15/2024 9:05:00 AM Information Microsoft-Windows-Security-Auditing 4688 Process Creation
+    A new process has been created.
+    Subject: Account Name: administrator
+    Process Information: New Process Name: C:\Windows\System32\cmd.exe
+    Command Line: cmd.exe /c net user backdoor Password123! /add
+
+1/15/2024 9:05:30 AM Information Microsoft-Windows-Security-Auditing 4688 Process Creation
+    A new process has been created.
+    Subject: Account Name: administrator
+    Process Information: New Process Name: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+    Command Line: powershell.exe -enc SQBuAHYAbwBrAGUALQBXAGUAYgBSAGUAcQB1AGUAcwB0
+
+# Normal Activity
+1/15/2024 10:00:00 AM Information Microsoft-Windows-Security-Auditing 4624 Logon
+    An account was successfully logged on.
+    Logon Type: 2
+    New Logon: Account Name: jdoe
+    Network Information: Source Network Address: 192.168.1.100
+
+1/15/2024 10:30:00 AM Information Microsoft-Windows-Security-Auditing 4634 Logoff
+    An account was logged off.
+    Subject: Account Name: jdoe
+
+1/15/2024 11:00:00 AM Information Microsoft-Windows-Security-Auditing 4624 Logon
+    An account was successfully logged on.
+    Logon Type: 10
+    New Logon: Account Name: asmith
+    Network Information: Source Network Address: 192.168.1.105
+
+# Off-Hours Administrative Activity
+1/15/2024 2:30:00 AM Information Microsoft-Windows-Security-Auditing 4624 Logon
+    An account was successfully logged on.
+    Logon Type: 10
+    New Logon: Account Name: domain_admin
+    Network Information: Source Network Address: 10.0.0.50
+
+1/15/2024 2:35:00 AM Information Microsoft-Windows-Security-Auditing 4672 Special Logon
+    Special privileges assigned to new logon.
+    Subject: Account Name: domain_admin
+    Privileges: SeDebugPrivilege, SeBackupPrivilege, SeRestorePrivilege
+
+1/15/2024 2:40:00 AM Information Microsoft-Windows-Security-Auditing 4688 Process Creation
+    A new process has been created.
+    Subject: Account Name: domain_admin
+    Process Information: New Process Name: C:\Windows\System32\vssadmin.exe
+    Command Line: vssadmin delete shadows /all /quiet
+
+# Distributed Attack - Password Spray
+1/15/2024 3:00:01 PM Audit Failure Microsoft-Windows-Security-Auditing 4625 Logon
+    Account For Which Logon Failed: Account Name: user1
+    Network Information: Source Network Address: 103.45.67.89
+
+1/15/2024 3:00:02 PM Audit Failure Microsoft-Windows-Security-Auditing 4625 Logon
+    Account For Which Logon Failed: Account Name: user2
+    Network Information: Source Network Address: 103.45.67.89
+
+1/15/2024 3:00:03 PM Audit Failure Microsoft-Windows-Security-Auditing 4625 Logon
+    Account For Which Logon Failed: Account Name: user3
+    Network Information: Source Network Address: 103.45.67.89
+
+1/15/2024 3:00:04 PM Audit Failure Microsoft-Windows-Security-Auditing 4625 Logon
+    Account For Which Logon Failed: Account Name: user4
+    Network Information: Source Network Address: 103.45.67.89
+
+1/15/2024 3:00:05 PM Audit Failure Microsoft-Windows-Security-Auditing 4625 Logon
+    Account For Which Logon Failed: Account Name: user5
+    Network Information: Source Network Address: 103.45.67.89
+# End of log
